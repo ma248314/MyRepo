@@ -1,0 +1,261 @@
+<script type="text/ng-template" id="addedUser.html">
+	<div>
+	<h3>
+	<u>SUCCESS</u>
+	</h3>
+	<div>
+	<small>User was successfully added &nbsp;<b><i>{{popupMsg}}</i></b> and his/her password would be <b><i>password</i></b></small>
+	</div>
+	<div class="ngdialog-buttons">
+	<button type="button" class="ngdialog-button ngdialog-button-primary"
+	ng-click=confirm("OK")>OK</button>
+	</div>
+	</div>
+</script>
+<script type="text/ng-template" id="failedToAdd.html">
+	<div>
+	<h3>
+	<u>ERROR!</u>
+	<h3>
+	<div>
+	<small>Failed to add the following user. User already
+	Exists.&nbsp;<b><i>{{popupMsg}}</i></b></small>
+	</div>
+	<div class="ngdialog-buttons">
+	<button type="button"
+	class="ngdialog-button ngdialog-button-primary" ng-click=confirm("OK")>OK</button>
+	</div>
+	</div>
+</script>
+<div class="content-wrapper" ng-controller="addUserController"
+	ng-init="getAllTeams();getAllUserRoles();getAllLocation();getAllBillableDetails();getAllUserAccounts();">
+	<!-- Content Header (Page header) -->
+	<section class="content-header">
+		<h1> Add <small> user</small></h1>
+	</section>
+
+	<section class="content">
+		<div class="col-lg-10">
+			<!-- general form elements -->
+			<div class="box box-primary">
+				<!-- /.box-header -->
+				<!-- form start -->
+				<form name="myForm">
+					<div class="box-body">
+						<div class="well col-md-11 well-lg" style="margin-left:20px;margin-right:100px;margin-top:20px;margin-bottom:20px;">
+							<div class="row">
+
+								<div class="col-md-6">
+
+									<input type="hidden" ng-model="empIdNo" />
+									<label
+									class="required">Emp ID</label>
+									<input type="text" name="empId"
+									ng-model="empId" class="form-control" required
+									ng-keypress="isNumber($event);" autocomplete="off" />
+									<span
+									style="color: red; font-style: italic;"
+									ng-show="myForm.empId.$error.required && myForm.empId.$dirty">&nbsp;Emp
+										Id is Required</span><span style="color: red; font-style: italic;"
+									ng-show="empIdNo">&nbsp;Emp Id should be a number</span>
+								</div>
+								<div class="col-md-6">
+									<label class="required">Emp ADID</label>
+									<input name="empADID"
+									type="text" class="form-control" ng-model="empADID" required
+									ng-change="empADID=empADID.toLowerCase();" autocomplete="off" />
+									<span style="color: red; font-style: italic;"
+									ng-show="myForm.empADID.$error.required && myForm.empADID.$dirty">&nbsp;Emp
+										ADID is Required</span>
+								</div>
+							</div>
+							<div class="row" style="margin-top: 15px;">
+								<div class="col-md-6">
+									<label class="required">First Name</label>
+									<input
+									name="firstName" type="text" class="form-control"
+									ng-model="firstName" required autocomplete="off" />
+									<span
+									style="color: red; font-style: italic;"
+									ng-show="myForm.firstName.$error.required && myForm.firstName.$dirty">&nbsp;First
+										Name is Required</span>
+								</div>
+								<div class="col-md-6">
+									<label class="required">Last Name</label>
+									<input name="lastName"
+									type="text" class="form-control" ng-model="lastName" required
+									autocomplete="off" />
+									<span
+									style="color: red; font-style: italic;"
+									ng-show="myForm.lastName.$error.required && myForm.lastName.$dirty">&nbsp;Last
+										Name is Required</span>
+								</div>
+							</div>
+							<div class="row" style="margin-top: 15px;">
+								<div class="col-md-6">
+									<label class="required">Role</label>
+									<select
+									class="form-control" name="selectedRole"
+									ng-model="selectedRole" required>
+										<option value=""></option>
+										<!-- <option value="1">Manager</option>
+										<option value="2">Employee</option> -->
+										<option ng-repeat="item in userRoleList"
+										value="{{item.userRoleSeq}}">{{item.userRoleName}}</option>
+									</select>
+									<span style="color: red; font-style: italic;"
+									ng-show="myForm.selectedRole.$error.required && myForm.selectedRole.$dirty">&nbsp;Role
+										is Required</span>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 15px;">
+							<div class="well col-md-5 well-lg" style="margin-left:35px;margin-right:25px;margin-bottom:10px;">
+								<label class="required">Account</label>
+								<select
+								class="form-control" name="selectedAccount"
+								ng-model="selectedAccount" required>
+									<option value=""></option>
+								
+										<option ng-repeat="item in userAccountList"  ng-model="accountName">{{item.teamName}}</option>
+								</select>
+								<span style="color: red; font-style: italic;"
+								ng-show="myForm.selectedAccount.$error.required && myForm.selectedAccount.$dirty">&nbsp;Account
+									is Required</span>
+								<div class="row" style="margin-top: 15px;">
+									<div class="col-md-6">
+										<label>Start Date</label>
+										<input type="text" class="form-control" ng-click="open5()"
+										uib-datepicker-popup="MM/dd/yyyy" ng-model="startDate1" required ng-init="startDate1=dt" 
+										alt-input-formats="altInputFormats" ng-required="true"
+										ng-change="seeleave1()" is-open="popup5.opened"   
+										datepicker-options="dateOptions" close-text="Close"/>
+										  
+									</div>
+									<div class="col-md-6">
+										<label>End Date</label>
+										<input ng-click="open6()" type="text" class="form-control"
+										uib-datepicker-popup="MM/dd/yyyy" ng-model="endDate1"
+										is-open="popup6.opened" datepicker-options="dateOptions"
+										ng-required="true" close-text="Close" />
+									</div>
+								</div>
+							</div>
+							<div class="well col-md-5 well-lg" style="margin-left:25px;">
+								<label class="required">Team</label>
+								<select
+								class="form-control" name="selectedTeam"
+								ng-model="selectedTeam" required>
+									<option value=""></option>
+									<option ng-repeat="item in userTeamList"
+									value="{{item.teamId}}">{{item.teamName}}</option>
+								</select>
+								<span style="color: red; font-style: italic;"
+								ng-show="myForm.selectedTeam.$error.required && myForm.selectedTeam.$dirty">&nbsp;Team
+									is Required</span>
+								<div class="row" style="margin-top: 15px;">
+									<div class="col-md-6">
+										<label>Start Date</label>
+										<input type="text" class="form-control" ng-click="open1()"
+										uib-datepicker-popup="MM/dd/yyyy" ng-model="startDate3" required ng-init="startDate3=dt"
+										is-open="popup1.opened" datepicker-options="dateOptions"
+										ng-required="true" close-text="Close"
+										alt-input-formats="altInputFormats" ng-change="seeleave1()" />
+									</div>
+
+									<div class="col-md-6">
+										<label>End Date</label>
+										<input ng-click="open2()" type="text" class="form-control"
+										uib-datepicker-popup="MM/dd/yyyy" ng-model="endDate3"
+										is-open="popup2.opened" datepicker-options="dateOptions"
+										ng-required="true" close-text="Close" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row" style="margin-top: 15px;">
+							<div class="well col-md-5 well-lg" style="margin-left:35px;margin-right:25px;margin-bottom:10px;">
+								<label class="required">Location</label>
+								<select
+								class="form-control" name="selectedLocation"
+								ng-model="selectedLocation" required>
+									<option value=""></option>
+									<option ng-repeat="item in locationList"
+										value="{{item.LocationSeq}}" ng-if="item.locationType=='OFFICE_LOCATION'">{{item.locationCode}}</option>
+								</select>
+								<span style="color: red; font-style: italic;"
+								ng-show="myForm.selectedLocation.$error.required && myForm.selectedLocation.$dirty">&nbsp;Role
+									is Required</span>
+								<div class="row" style="margin-top: 15px;">
+									<div class="col-md-6">
+										<label>Start Date</label>
+										<input type="text" class="form-control" ng-click="open7()"
+										uib-datepicker-popup="MM/dd/yyyy" ng-model="startDate2" required ng-init="startDate2=dt"
+										is-open="popup7.opened" datepicker-options="dateOptions"
+										ng-required="true" close-text="Close"
+										alt-input-formats="altInputFormats" ng-change="seeleave1()" />
+									</div>
+									<div class="col-md-6">
+										<label>End Date</label>
+										<input ng-click="open8()" type="text" class="form-control"
+										uib-datepicker-popup="MM/dd/yyyy" ng-model="endDate2"
+										is-open="popup8.opened" datepicker-options="dateOptions"
+										ng-required="true" close-text="Close" />
+									</div>
+								</div>
+							</div>
+							<div class="well col-md-5 well-lg" style="margin-left:25px;">
+								<label class="required">Billability</label>
+								<select
+								class="form-control" name="selectedBillable"
+								ng-model="selectedBillable" required>
+									<option value=""></option>
+									<!-- <option value="1">Manager</option>
+									<option value="2">Employee</option> -->
+									<option ng-repeat="item in BillableList"
+									value="{{item.BillableSeq}}">{{item.billableDesc}}</option>
+								</select>
+								<span style="color: red; font-style: italic;"
+								ng-show="myForm.selectedBillable.$error.required && myForm.selectedBillable.$dirty">&nbsp;Role
+									is Required</span>
+								<div class="row" style="margin-top: 15px;">
+									<div class="col-md-6">
+										<label>Start Date</label>
+										<input type="text" class="form-control" ng-click="open9()"
+										uib-datepicker-popup="MM/dd/yyyy" ng-model="startDate" required ng-init="startDate=dt"
+										is-open="popup9.opened" datepicker-options="dateOptions1"
+										ng-required="true" close-text="Close"
+										alt-input-formats="altInputFormats" ng-change="seeleave1()" />
+									</div>
+									<div class="col-md-6">
+										<label>End Date</label>
+										<input ng-click="open10()" type="text" class="form-control"
+										uib-datepicker-popup="MM/dd/yyyy" ng-model="endDate"
+										is-open="popup10.opened" datepicker-options="dateOptions1"
+										ng-required="true" close-text="Close" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 15px;">
+							<div class="col-md-6">
+								<input type="button" class="btn btn-info" ng-click="resetAll();"
+								value="Reset">
+								</input>
+							</div>
+							<div class="col-md-6">
+								<button type="submit" class="btn btn-success pull-right"
+								ng-disabled="myForm.empId.$error.required || myForm.empADID.$error.required || myForm.firstName.$error.required || myForm.lastName.$error.required || myForm.selectedTeam.$error.required || myForm.selectedRole.$error.required"
+								ng-click="addNewUser();">
+									Add User
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+</div>
+<!-- /.content-wrapper -->
